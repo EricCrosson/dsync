@@ -17,7 +17,7 @@ Usage:
 Options:
   -d --dest     Destination host.
   -h --help     Show this screen.
-  -v --version  Show version.`
+  -v --version  Show version.
 ```
 
 ## License
