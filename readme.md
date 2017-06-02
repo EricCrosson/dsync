@@ -1,4 +1,4 @@
-# dsync
+# dsync [![Build Status](https://travis-ci.org/EricCrosson/dsync.svg?branch=master)](https://travis-ci.org/EricCrosson/dsync)
 
 > Synchronize docker images without a registry
 
