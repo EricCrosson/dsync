@@ -4,14 +4,14 @@
 package main
 
 import (
-	"os"
 	"fmt"
-	"sync"
-	"path"
 	"io/ioutil"
+	"os"
+	"path"
+	"sync"
 
-	"github.com/docopt/docopt-go"
 	"github.com/codeskyblue/go-sh"
+	"github.com/docopt/docopt-go"
 )
 
 type Image struct {
