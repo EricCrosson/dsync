@@ -4,7 +4,7 @@
 
 ## Install
 
-    go get github.com/ericcrossonn/dsync
+    go get github.com/ericcrosson/dsync
 
 ## Use
 
