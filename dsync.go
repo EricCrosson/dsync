@@ -20,12 +20,14 @@ type Image struct {
 }
 
 // Synchronize specified docker image from src to dest.
-func syncImage(image Image, dest string, wg *sync.WaitGroup) {
+func syncImage(images []Image, dest string, wg *sync.WaitGroup) {
 	defer wg.Done()
-	remoteTemporaryImageName := path.Join("/tmp", fmt.Sprintf("dsync-%s", image.name))
-	sh.Command("rsync", "-Prahz", image.path, fmt.Sprintf("%s:%s", dest, remoteTemporaryImageName)).Run()
-	sh.Command("ssh", dest, "docker", "load", "-i", image.path).Run()
-	sh.Command("ssh", dest, "rm", "-f", remoteTemporaryImageName).Run()
+	for _, image := range images {
+		remoteTemporaryImageName := path.Join("/tmp", fmt.Sprintf("dsync-%s", image.name))
+		sh.Command("rsync", "-Prahz", image.path, fmt.Sprintf("%s:%s", dest, remoteTemporaryImageName)).Run()
+		sh.Command("ssh", dest, "docker", "load", "-i", image.path).Run()
+		sh.Command("ssh", dest, "rm", "-f", remoteTemporaryImageName).Run()
+	}
 }
 
 // Save specified image to local temp-file.
@@ -51,11 +53,11 @@ func main() {
 
 Usage:
   dsync <image> to <dest>...
+  dsync <dest> gets <image>...
   dsync --help
   dsync --version
 
 Options:
-  -d --dest     Destination host.
   -h --help     Show this screen.
   -v --version  Show version.`
 
@@ -65,11 +67,16 @@ Options:
 	dests := arguments["<dest>"].([]string)
 	wg.Add(len(dests))
 
-	image := saveImage(arguments["<image>"].(string))
-	defer image.remove()
+	rawImageNames := arguments["<image>"].([]string)
+	var images []Image
+	for _, imageName := range rawImageNames {
+		image := saveImage(imageName)
+		images = append(images, image)
+		defer image.remove()
+	}
 
 	for _, dest := range dests {
-		go syncImage(image, dest, &wg)
+		go syncImage(images, dest, &wg)
 	}
 	wg.Wait()
 }

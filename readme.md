@@ -11,11 +11,11 @@
 ```bash
 Usage:
   dsync <image> to <dest>...
+  dsync <dest> gets <image>...
   dsync --help
   dsync --version
 
 Options:
-  -d --dest     Destination host.
   -h --help     Show this screen.
   -v --version  Show version.
 ```
